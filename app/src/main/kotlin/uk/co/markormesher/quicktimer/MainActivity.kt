@@ -11,6 +11,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.NumberPicker
 import kotlinx.android.synthetic.main.activity_main.*
+import uk.co.markormesher.quicktimer.helpers.getPrimaryColor
+import uk.co.markormesher.quicktimer.helpers.toast
 
 
 class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClickListener {
@@ -52,7 +54,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 	private fun updateTimerList() {
 		with(timerRecyclerAdapter.timers) {
 			clear()
-			addAll(getTimerList())
+			addAll(TimerListStorage.getTimerList(this@MainActivity))
 		}
 		timerRecyclerAdapter.notifyDataSetChanged()
 
@@ -77,10 +79,10 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 			setPositiveButton(R.string.ok, { _, _ ->
 				picker.clearFocus()
 				val duration = picker.value
-				if (getTimerList().contains(duration)) {
+				if (TimerListStorage.getTimerList(this@MainActivity).contains(duration)) {
 					toast(R.string.duplicate_timer)
 				} else {
-					addTimer(duration)
+					TimerListStorage.addTimer(this@MainActivity, duration)
 					updateTimerList()
 				}
 			})
@@ -104,7 +106,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		with(AlertDialog.Builder(this)) {
 			setMessage(R.string.confirm_timer_delete)
 			setPositiveButton(R.string.ok, { _, _ ->
-				removeTimer(duration)
+				TimerListStorage.removeTimer(this@MainActivity, duration)
 				updateTimerList()
 			})
 			setNegativeButton(R.string.cancel, null)

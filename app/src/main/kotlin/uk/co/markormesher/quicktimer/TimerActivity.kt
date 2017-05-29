@@ -11,6 +11,9 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import kotlinx.android.synthetic.main.activity_timer.*
+import uk.co.markormesher.quicktimer.helpers.AbstractAnimationListener
+import uk.co.markormesher.quicktimer.helpers.Preferences
+import uk.co.markormesher.quicktimer.helpers.toast
 
 
 class TimerActivity: AppCompatActivity() {

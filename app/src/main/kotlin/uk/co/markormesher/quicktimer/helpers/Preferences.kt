@@ -1,7 +1,8 @@
-package uk.co.markormesher.quicktimer
+package uk.co.markormesher.quicktimer.helpers
 
 import android.content.Context
 import android.preference.PreferenceManager
+import uk.co.markormesher.quicktimer.R
 
 object Preferences {
 

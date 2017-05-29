@@ -1,9 +1,9 @@
-package uk.co.markormesher.quicktimer
+package uk.co.markormesher.quicktimer.helpers
 
 import android.content.Context
 import android.util.TypedValue
-import android.view.animation.Animation
 import android.widget.Toast
+import uk.co.markormesher.quicktimer.R
 
 fun Context.toast(message: Int) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -14,15 +14,3 @@ fun Context.getPrimaryColor(): Int {
 	a.recycle()
 	return color
 }
-
-open class AbstractAnimationListener: Animation.AnimationListener {
-	override fun onAnimationStart(animation: Animation?) {
-	}
-
-	override fun onAnimationRepeat(animation: Animation?) {
-	}
-
-	override fun onAnimationEnd(animation: Animation?) {
-	}
-}
-
