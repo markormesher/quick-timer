@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+		xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<PreferenceCategory
+			android:title="Timer Completion Alarm">
+
+		<CheckBoxPreference
+				android:key="@string/setting_key_vibrate_on_timer_end"
+				android:title="@string/setting_title_vibrate_on_timer_end"
+				android:defaultValue="true"/>
+
+		<CheckBoxPreference
+				android:key="@string/setting_key_sound_on_timer_end"
+				android:title="@string/setting_title_sound_on_timer_end"
+				android:defaultValue="false"/>
+
+	</PreferenceCategory>
+
+</PreferenceScreen>

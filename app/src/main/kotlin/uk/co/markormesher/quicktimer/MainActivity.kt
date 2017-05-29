@@ -6,11 +6,14 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.NumberPicker
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity: AppCompatActivity(), uk.co.markormesher.quicktimer.TimerRecyclerAdapter.TimerRecyclerClickListener {
+
+class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClickListener {
 
 	private val timerRecyclerLayoutManager by lazy { LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) }
 	private val timerRecyclerAdapter by lazy { uk.co.markormesher.quicktimer.TimerRecyclerAdapter(this, this) }
@@ -32,6 +35,18 @@ class MainActivity: AppCompatActivity(), uk.co.markormesher.quicktimer.TimerRecy
 		fab.setOnClickListener { addTimer() }
 
 		updateTimerList()
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+		menuInflater.inflate(R.menu.menu, menu)
+		return true
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+		when (item?.itemId) {
+			R.id.goto_settings -> startActivity(Intent(this, SettingsActivity::class.java))
+		}
+		return super.onOptionsItemSelected(item)
 	}
 
 	private fun updateTimerList() {

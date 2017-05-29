@@ -17,4 +17,12 @@
 
 	<string name="exit_timer_confirm">Press back again to cancel timer.</string>
 
+	<string name="menu_option_settings">Settings</string>
+
+	<string name="setting_title_timer_completion_alarm">Timer Completion Alarm</string>
+	<string name="setting_key_vibrate_on_timer_end">vibrate_on_timer_end</string>
+	<string name="setting_title_vibrate_on_timer_end">Vibrate</string>
+	<string name="setting_key_sound_on_timer_end">sound_on_timer_end</string>
+	<string name="setting_title_sound_on_timer_end">Sound</string>
+
 </resources>

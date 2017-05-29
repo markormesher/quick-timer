@@ -1,12 +1,10 @@
 package uk.co.markormesher.quicktimer
 
 import android.content.Context
-import android.preference.PreferenceManager
+import uk.co.markormesher.quicktimer.Preferences.getPrefs
 
 private val TIMER_LIST_KEY = "timer_list"
 private val DEFAULT_TIMER_LIST = "30,60,90"
-
-private fun getPrefs(context: Context) = PreferenceManager.getDefaultSharedPreferences(context)
 
 fun Context.getTimerList(): List<Int> = getPrefs(this)
 		.getString(TIMER_LIST_KEY, DEFAULT_TIMER_LIST)

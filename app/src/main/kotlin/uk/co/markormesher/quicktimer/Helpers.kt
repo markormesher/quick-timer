@@ -5,7 +5,6 @@ import android.util.TypedValue
 import android.view.animation.Animation
 import android.widget.Toast
 
-
 fun Context.toast(message: Int) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
@@ -26,3 +25,4 @@ open class AbstractAnimationListener: Animation.AnimationListener {
 	override fun onAnimationEnd(animation: Animation?) {
 	}
 }
+

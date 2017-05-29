@@ -1,6 +1,8 @@
 package uk.co.markormesher.quicktimer
 
 import android.content.Context
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Vibrator
@@ -9,6 +11,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import kotlinx.android.synthetic.main.activity_timer.*
+
 
 class TimerActivity: AppCompatActivity() {
 
@@ -73,7 +76,14 @@ class TimerActivity: AppCompatActivity() {
 			background_done.startAnimation(this)
 		}
 
-		(getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(longArrayOf(0L, 500L, 300L, 500L), -1)
+		if (Preferences.shouldVibrateOnTimerEnd(this)) {
+			(getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(longArrayOf(0L, 500L, 300L, 500L), -1)
+		}
+
+		if (Preferences.shouldPlaySoundOnTimerEnd(this)) {
+			val alarmTone: Uri = Uri.parse("android.resource://" + packageName + "/" + R.raw.alarm)
+			MediaPlayer.create(applicationContext, alarmTone).start()
+		}
 	}
 
 }
