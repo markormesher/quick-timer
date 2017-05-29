@@ -6,6 +6,8 @@ import android.os.CountDownTimer
 import android.os.Vibrator
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import kotlinx.android.synthetic.main.activity_timer.*
 
 class TimerActivity: AppCompatActivity() {
@@ -38,10 +40,16 @@ class TimerActivity: AppCompatActivity() {
 		val totalMillis = duration * 1000L
 		object: CountDownTimer(totalMillis, 25) {
 			override fun onTick(millisUntilFinished: Long) {
-				val remaining = Math.ceil(millisUntilFinished / 1000.0).toInt()
-				timer.text = remaining.toString()
-				background_progress.scaleY = millisUntilFinished / totalMillis.toFloat()
-				background_progress.alpha = 0.2f + (millisUntilFinished / totalMillis.toFloat() * 0.8f)
+				val secProgress = (millisUntilFinished / 1000.0f).rem(1)
+				val totalProgress = millisUntilFinished / totalMillis.toFloat()
+
+				timer.text = Math.ceil(millisUntilFinished / 1000.0).toInt().toString()
+				timer.alpha = 0.5f + (secProgress * 0.5f)
+				timer.scaleX = 0.8f + (secProgress * 0.2f)
+				timer.scaleY = 0.8f + (secProgress * 0.2f)
+
+				background_progress.scaleY = totalProgress
+				background_progress.alpha = 0.2f + (totalProgress * 0.8f)
 			}
 
 			override fun onFinish() {
@@ -52,20 +60,19 @@ class TimerActivity: AppCompatActivity() {
 
 	private fun finishTimer() {
 		timer.text = "0"
-		background_progress.visibility = View.GONE
-		object: CountDownTimer(2500, 250) {
-			override fun onTick(millisUntilFinished: Long) {
-				if (background_done.visibility == View.VISIBLE) {
-					background_done.visibility = View.GONE
-				} else {
-					background_done.visibility = View.VISIBLE
-				}
-			}
+		timer.alpha = 1.0f
+		timer.scaleX = 1.0f
+		timer.scaleY = 1.0f
 
-			override fun onFinish() {
-				finish()
-			}
-		}.start()
+		background_progress.visibility = View.GONE
+		background_done.visibility = View.VISIBLE
+		with(AnimationUtils.loadAnimation(this, R.anim.timer_background_flash)) {
+			setAnimationListener(object: AbstractAnimationListener() {
+				override fun onAnimationEnd(animation: Animation?) = finish()
+			})
+			background_done.startAnimation(this)
+		}
+
 		(getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(longArrayOf(0L, 500L, 300L, 500L), -1)
 	}
 

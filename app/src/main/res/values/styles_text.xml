@@ -18,7 +18,7 @@
 	</style>
 
 	<style name="Text.TimerDisplay" parent="Text">
-		<item name="android:textSize">84sp</item>
+		<item name="android:textSize">92sp</item>
 	</style>
 
 </resources>
