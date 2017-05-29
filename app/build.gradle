@@ -1,0 +1,76 @@
+buildscript {
+	repositories {
+		jcenter()
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlinVersion"
+	}
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+def secrets = getSecrets()
+def appProperties = getAppProperties(projectDir)
+
+android {
+	compileSdkVersion 25
+	buildToolsVersion "25.0.3"
+
+	defaultConfig {
+		applicationId "uk.co.markormesher.resttimer"
+		minSdkVersion 16
+		targetSdkVersion 25
+		versionCode = appProperties['VERSION_CODE'].toInteger()
+		versionName = appProperties['VERSION_NAME']
+		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+	}
+
+	signingConfigs {
+		main {
+			storeFile secrets.isEmpty() ? null : file(secrets['KEYSTORE_PATH'])
+			storePassword secrets['KEYSTORE_PASSWORD']
+			keyAlias secrets['KEYSTORE_KEY_ALIAS']
+			keyPassword secrets['KEYSTORE_KEY_PASSWORD']
+		}
+	}
+
+	buildTypes {
+		release {
+			//noinspection GroovyAssignabilityCheck
+			signingConfig signingConfigs.main
+			minifyEnabled true
+			proguardFile 'proguard-rules.pro'
+			buildConfigField "boolean", "DEBUG_MODE", "false"
+			debuggable false
+		}
+
+		debug {
+			//noinspection GroovyAssignabilityCheck
+			signingConfig signingConfigs.main
+			minifyEnabled false
+			buildConfigField "boolean", "DEBUG_MODE", "true"
+			debuggable true
+		}
+	}
+
+	sourceSets {
+		main.java.srcDirs += 'src/main/kotlin'
+	}
+}
+
+dependencies {
+	def supportLibraryVersion = '25.3.1'
+
+	compile fileTree(dir: 'libs', include: ['*.jar'])
+	compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+	compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+
+	testCompile 'junit:junit:4.12'
+	androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+		exclude group: 'com.android.support', module: 'support-annotations'
+	})
+}
