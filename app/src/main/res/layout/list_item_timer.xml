@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingTop="@dimen/space_medium"
+		android:paddingBottom="@dimen/space_medium"
+		android:gravity="bottom|center_horizontal"
+		android:orientation="horizontal"
+		android:background="?attr/selectableItemBackground"
+		>
+
+	<TextView
+			android:id="@+id/duration"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="@dimen/space_nano"
+			android:layout_marginRight="@dimen/space_nano"
+			style="@style/Text.TimerListItemDuration"
+			/>
+
+	<TextView
+			android:id="@+id/units"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			style="@style/Text.TimerListItemMeta"
+			/>
+
+</LinearLayout>

@@ -1,5 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
 	<string name="app_name">Rest Timer</string>
+
+	<string name="ok">OK</string>
+	<string name="cancel">Cancel</string>
+
+	<string name="no_timers">No timers to display.</string>
+
+	<string name="sec_singular">sec</string>
+	<string name="sec_plural">secs</string>
+
+	<string name="select_timer_duration">Select duration</string>
+	<string name="duplicate_timer">That duration already exists.</string>
+	<string name="confirm_timer_delete">Delete timer?</string>
 
 </resources>

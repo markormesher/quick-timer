@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<dimen name="space_nano">4dp</dimen>
+	<dimen name="space_micro">8dp</dimen>
+	<dimen name="space_micro_small">12dp</dimen>
+	<dimen name="space_small">16dp</dimen>
+	<dimen name="space_small_medium">20dp</dimen>
+	<dimen name="space_medium">24dp</dimen>
+	<dimen name="space_medium_large">36dp</dimen>
+	<dimen name="space_large">48dp</dimen>
+	<dimen name="space_huge">72dp</dimen>
+
+</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<style name="Text" parent="TextAppearance.AppCompat">
+		<item name="android:textColor">@color/primary_text</item>
+	</style>
+
+	<style name="Text.TimerListItemDuration" parent="Text">
+		<item name="android:textSize">32sp</item>
+	</style>
+
+	<style name="Text.TimerListItemMeta" parent="Text">
+		<item name="android:textSize">22sp</item>
+	</style>
+
+	<style name="Text.Note" parent="Text">
+		<item name="android:textSize">16sp</item>
+	</style>
+
+</resources>
