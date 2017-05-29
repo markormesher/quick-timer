@@ -20,6 +20,8 @@
 	<string name="menu_option_settings">Settings</string>
 
 	<string name="setting_group_timer_display">Timer Display</string>
+	<string name="setting_key_keep_screen_on">keep_screen_on</string>
+	<string name="setting_title_keep_screen_on">Keep the screen on</string>
 	<string name="setting_key_animate_timer_digits">animate_timer_digits</string>
 	<string name="setting_title_animate_timer_digits">Animate digits</string>
 

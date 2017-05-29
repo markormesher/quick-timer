@@ -8,6 +8,8 @@ object Preferences {
 
 	fun getPrefs(context: Context) = PreferenceManager.getDefaultSharedPreferences(context)!!
 
+	fun shouldKeepScreenOn(context: Context) = getPrefs(context).getBoolean(context.getString(R.string.setting_key_keep_screen_on), true)
+
 	fun shouldAnimateTimerDigits(context: Context) = getPrefs(context).getBoolean(context.getString(R.string.setting_key_animate_timer_digits), true)
 
 	fun shouldVibrateOnTimerEnd(context: Context) = getPrefs(context).getBoolean(context.getString(R.string.setting_key_vibrate_on_timer_end), true)

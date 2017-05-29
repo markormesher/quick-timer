@@ -6,6 +6,11 @@
 			android:title="@string/setting_group_timer_display">
 
 		<CheckBoxPreference
+				android:key="@string/setting_key_keep_screen_on"
+				android:title="@string/setting_title_keep_screen_on"
+				android:defaultValue="true"/>
+
+		<CheckBoxPreference
 				android:key="@string/setting_key_animate_timer_digits"
 				android:title="@string/setting_title_animate_timer_digits"
 				android:defaultValue="true"/>

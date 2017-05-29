@@ -9,8 +9,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.widget.NumberPicker
 import kotlinx.android.synthetic.main.activity_main.*
+import uk.co.markormesher.quicktimer.helpers.Preferences
 import uk.co.markormesher.quicktimer.helpers.getPrimaryColor
 import uk.co.markormesher.quicktimer.helpers.toast
 
@@ -25,6 +27,15 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 		initViews()
+	}
+
+	override fun onResume() {
+		super.onResume()
+		if (Preferences.shouldKeepScreenOn(this)) {
+			window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+		} else {
+			window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+		}
 	}
 
 	private fun initViews() {

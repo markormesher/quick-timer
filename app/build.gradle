@@ -42,8 +42,7 @@ android {
 		release {
 			//noinspection GroovyAssignabilityCheck
 			signingConfig signingConfigs.main
-			minifyEnabled true
-			proguardFile 'proguard-rules.pro'
+			minifyEnabled false
 			buildConfigField "boolean", "DEBUG_MODE", "false"
 			debuggable false
 		}

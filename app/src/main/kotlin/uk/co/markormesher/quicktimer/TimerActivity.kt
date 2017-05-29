@@ -8,6 +8,7 @@ import android.os.CountDownTimer
 import android.os.Vibrator
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import kotlinx.android.synthetic.main.activity_timer.*
@@ -30,6 +31,15 @@ class TimerActivity: AppCompatActivity() {
 		setContentView(R.layout.activity_timer)
 		val duration = intent.extras?.getInt(DURATION_KEY, 0) ?: 0
 		startTimer(duration)
+	}
+
+	override fun onResume() {
+		super.onResume()
+		if (Preferences.shouldKeepScreenOn(this)) {
+			window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+		} else {
+			window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+		}
 	}
 
 	override fun onBackPressed() {
