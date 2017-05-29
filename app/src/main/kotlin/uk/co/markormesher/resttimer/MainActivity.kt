@@ -88,7 +88,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 	override fun onTimerLongClick(duration: Int): Boolean {
 		with(AlertDialog.Builder(this)) {
 			setTitle(R.string.confirm_timer_delete)
-			setPositiveButton(R.string.confirm_timer_delete, { _, _ ->
+			setPositiveButton(R.string.ok, { _, _ ->
 				removeTimer(duration)
 				updateTimerList()
 			})
