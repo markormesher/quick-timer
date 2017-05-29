@@ -8,10 +8,14 @@ import kotlinx.android.synthetic.main.activity_timer.*
 
 class TimerActivity: AppCompatActivity() {
 
+	companion object {
+		val DURATION_KEY = "duration"
+	}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_timer)
-		val duration = intent.extras?.getInt("DURATION", 0) ?: 0
+		val duration = intent.extras?.getInt(DURATION_KEY, 0) ?: 0
 		startTimer(duration)
 	}
 

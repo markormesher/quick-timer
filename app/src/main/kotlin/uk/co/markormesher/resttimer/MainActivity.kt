@@ -81,7 +81,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 
 	override fun onTimerClick(duration: Int) {
 		val gotoTimerIntent = Intent(this, TimerActivity::class.java)
-		gotoTimerIntent.putExtra("DURATION", duration)
+		gotoTimerIntent.putExtra(TimerActivity.DURATION_KEY, duration)
 		startActivity(gotoTimerIntent)
 	}
 
