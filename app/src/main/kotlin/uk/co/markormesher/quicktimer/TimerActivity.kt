@@ -47,9 +47,11 @@ class TimerActivity: AppCompatActivity() {
 				val totalProgress = millisUntilFinished / totalMillis.toFloat()
 
 				timer.text = Math.ceil(millisUntilFinished / 1000.0).toInt().toString()
-				timer.alpha = 0.5f + (secProgress * 0.5f)
-				timer.scaleX = 0.8f + (secProgress * 0.2f)
-				timer.scaleY = 0.8f + (secProgress * 0.2f)
+				if (Preferences.shouldAnimateTimerDigits(this@TimerActivity)) {
+					timer.alpha = 0.5f + (secProgress * 0.5f)
+					timer.scaleX = 0.8f + (secProgress * 0.2f)
+					timer.scaleY = 0.8f + (secProgress * 0.2f)
+				}
 
 				background_progress.scaleY = totalProgress
 				background_progress.alpha = 0.2f + (totalProgress * 0.8f)
