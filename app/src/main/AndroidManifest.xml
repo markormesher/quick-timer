@@ -24,6 +24,11 @@
 
 		</activity>
 
+		<activity
+				android:name=".TimerActivity"
+				android:screenOrientation="portrait"
+				/>
+
 	</application>
 
 </manifest>

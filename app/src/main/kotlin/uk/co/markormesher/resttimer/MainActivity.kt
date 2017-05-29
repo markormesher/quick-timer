@@ -1,5 +1,6 @@
 package uk.co.markormesher.resttimer
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -79,7 +80,9 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 	}
 
 	override fun onTimerClick(duration: Int) {
-		toast(duration.toString())
+		val gotoTimerIntent = Intent(this, TimerActivity::class.java)
+		gotoTimerIntent.putExtra("DURATION", duration)
+		startActivity(gotoTimerIntent)
 	}
 
 	override fun onTimerLongClick(duration: Int): Boolean {

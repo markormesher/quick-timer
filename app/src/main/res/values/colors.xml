@@ -7,13 +7,13 @@
 
 	<color name="primary">#03a9f4</color>
 	<color name="primary_dark">#0288d1</color>
-	<color name="primary_light">#b3e5fc</color>
 	<color name="accent">#ff4081</color>
 
 	<color name="primary_text">#212121</color>
-	<color name="secondary_text">#757575</color>
-	<color name="error_text">#ff990000</color>
 
 	<color name="divider">#bdbdbd</color>
+
+	<color name="timer_progress_background">#b3e5fc</color>
+	<color name="timer_done_background">#98ff98</color>
 
 </resources>
