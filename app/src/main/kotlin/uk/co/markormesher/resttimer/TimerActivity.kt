@@ -12,11 +12,24 @@ class TimerActivity: AppCompatActivity() {
 		val DURATION_KEY = "duration"
 	}
 
+	private var lastBackClick = 0L
+	private val backClickThreshold = 1500L
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_timer)
 		val duration = intent.extras?.getInt(DURATION_KEY, 0) ?: 0
 		startTimer(duration)
+	}
+
+	override fun onBackPressed() {
+		val now = System.currentTimeMillis()
+		if (now - lastBackClick <= backClickThreshold) {
+			super.onBackPressed()
+		} else {
+			toast(R.string.exit_timer_confirm)
+			lastBackClick = now
+		}
 	}
 
 	private fun startTimer(duration: Int) {

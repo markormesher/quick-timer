@@ -15,4 +15,6 @@
 	<string name="duplicate_timer">That duration already exists.</string>
 	<string name="confirm_timer_delete">Delete timer?</string>
 
+	<string name="exit_timer_confirm">Press back again to cancel timer.</string>
+
 </resources>
