@@ -1,7 +1,9 @@
 package uk.co.markormesher.quicktimer
 
+import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Vibrator
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import kotlinx.android.synthetic.main.activity_timer.*
@@ -64,6 +66,7 @@ class TimerActivity: AppCompatActivity() {
 				finish()
 			}
 		}.start()
+		(getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(longArrayOf(0L, 500L, 300L, 500L), -1)
 	}
 
 }
