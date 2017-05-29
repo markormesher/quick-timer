@@ -1,4 +1,4 @@
-package uk.co.markormesher.resttimer
+package uk.co.markormesher.quicktimer
 
 import android.content.Context
 import android.util.TypedValue

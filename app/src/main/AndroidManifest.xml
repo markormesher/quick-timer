@@ -1,6 +1,6 @@
 <manifest
 		xmlns:android="http://schemas.android.com/apk/res/android"
-		package="uk.co.markormesher.resttimer">
+		package="uk.co.markormesher.quicktimer">
 
 	<application
 			android:allowBackup="true"
@@ -12,7 +12,7 @@
 			>
 
 		<activity
-				android:name=".MainActivity"
+				android:name="uk.co.markormesher.quicktimer.MainActivity"
 				android:launchMode="singleInstance"
 				android:screenOrientation="portrait"
 				>
@@ -25,7 +25,7 @@
 		</activity>
 
 		<activity
-				android:name=".TimerActivity"
+				android:name="uk.co.markormesher.quicktimer.TimerActivity"
 				android:screenOrientation="portrait"
 				/>
 

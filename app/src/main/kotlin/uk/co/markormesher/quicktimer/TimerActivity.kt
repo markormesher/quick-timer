@@ -1,4 +1,4 @@
-package uk.co.markormesher.resttimer
+package uk.co.markormesher.quicktimer
 
 import android.os.Bundle
 import android.os.CountDownTimer

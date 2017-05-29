@@ -1,4 +1,4 @@
-package uk.co.markormesher.resttimer
+package uk.co.markormesher.quicktimer
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,10 +10,10 @@ import android.view.View
 import android.widget.NumberPicker
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClickListener {
+class MainActivity: AppCompatActivity(), uk.co.markormesher.quicktimer.TimerRecyclerAdapter.TimerRecyclerClickListener {
 
 	private val timerRecyclerLayoutManager by lazy { LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) }
-	private val timerRecyclerAdapter by lazy { TimerRecyclerAdapter(this, this) }
+	private val timerRecyclerAdapter by lazy { uk.co.markormesher.quicktimer.TimerRecyclerAdapter(this, this) }
 	private val timerRecyclerDecoration by lazy { DividerItemDecoration(timers_recycler.context, timerRecyclerLayoutManager.orientation) }
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +81,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 
 	override fun onTimerClick(duration: Int) {
 		val gotoTimerIntent = Intent(this, TimerActivity::class.java)
-		gotoTimerIntent.putExtra(TimerActivity.DURATION_KEY, duration)
+		gotoTimerIntent.putExtra(TimerActivity.Companion.DURATION_KEY, duration)
 		startActivity(gotoTimerIntent)
 	}
 
