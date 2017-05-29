@@ -39,6 +39,7 @@ class TimerActivity: AppCompatActivity() {
 				val remaining = Math.ceil(millisUntilFinished / 1000.0).toInt()
 				timer.text = remaining.toString()
 				background_progress.scaleY = millisUntilFinished / totalMillis.toFloat()
+				background_progress.alpha = 0.2f + (millisUntilFinished / totalMillis.toFloat() * 0.8f)
 			}
 
 			override fun onFinish() {
