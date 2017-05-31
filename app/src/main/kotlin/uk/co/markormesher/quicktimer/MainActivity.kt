@@ -82,7 +82,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		with(AlertDialog.Builder(this)) {
 			val picker = NumberPicker(this@MainActivity)
 			picker.minValue = 1
-			picker.maxValue = 600
+			picker.maxValue = 10 * 60 * 60
 			picker.value = 30
 
 			setTitle(R.string.select_timer_duration)

@@ -9,16 +9,12 @@
 		<item name="android:textSize">32sp</item>
 	</style>
 
-	<style name="Text.TimerListItemMeta" parent="Text">
-		<item name="android:textSize">22sp</item>
-	</style>
-
 	<style name="Text.Note" parent="Text">
 		<item name="android:textSize">16sp</item>
 	</style>
 
 	<style name="Text.TimerDisplay" parent="Text">
-		<item name="android:textSize">92sp</item>
+		<item name="android:textSize">64sp</item>
 	</style>
 
 </resources>

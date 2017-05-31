@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.list_item_timer.view.*
+import uk.co.markormesher.quicktimer.helpers.formatDuration
 
 class TimerRecyclerAdapter(val context: Context, val listener: TimerRecyclerClickListener? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -21,8 +22,7 @@ class TimerRecyclerAdapter(val context: Context, val listener: TimerRecyclerClic
 	override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
 		with(holder as TimerViewHolder) {
 			val timer = timers[position]
-			duration.text = timer.toString()
-			units.text = context.getString(if (timer > 1) R.string.sec_plural else R.string.sec_singular)
+			duration.text = context.formatDuration(timer)
 			rootView.setOnClickListener { listener?.onTimerClick(timer) }
 			rootView.setOnLongClickListener { listener?.onTimerLongClick(timer) ?: false }
 		}
@@ -31,7 +31,6 @@ class TimerRecyclerAdapter(val context: Context, val listener: TimerRecyclerClic
 	class TimerViewHolder(v: View): RecyclerView.ViewHolder(v) {
 		val rootView = v
 		val duration = v.duration!!
-		val units = v.units!!
 	}
 
 	interface TimerRecyclerClickListener {
