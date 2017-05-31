@@ -14,6 +14,7 @@ import android.view.animation.AnimationUtils
 import kotlinx.android.synthetic.main.activity_timer.*
 import uk.co.markormesher.quicktimer.helpers.AbstractAnimationListener
 import uk.co.markormesher.quicktimer.helpers.Preferences
+import uk.co.markormesher.quicktimer.helpers.formatDuration
 import uk.co.markormesher.quicktimer.helpers.toast
 
 
@@ -56,16 +57,9 @@ class TimerActivity: AppCompatActivity() {
 		val totalMillis = duration * 1000L
 		object: CountDownTimer(totalMillis, 25) {
 			override fun onTick(millisUntilFinished: Long) {
-				val secProgress = (millisUntilFinished / 1000.0f).rem(1)
 				val totalProgress = millisUntilFinished / totalMillis.toFloat()
 
-				timer.text = Math.ceil(millisUntilFinished / 1000.0).toInt().toString()
-				if (Preferences.shouldAnimateTimerDigits(this@TimerActivity)) {
-					timer.alpha = 0.5f + (secProgress * 0.5f)
-					timer.scaleX = 0.8f + (secProgress * 0.2f)
-					timer.scaleY = 0.8f + (secProgress * 0.2f)
-				}
-
+				timer.text = this@TimerActivity.formatDuration(Math.ceil(millisUntilFinished / 1000.0).toInt())
 				background_progress.scaleY = totalProgress
 				background_progress.alpha = 0.2f + (totalProgress * 0.8f)
 			}
@@ -78,9 +72,6 @@ class TimerActivity: AppCompatActivity() {
 
 	private fun finishTimer() {
 		timer.text = "0"
-		timer.alpha = 1.0f
-		timer.scaleX = 1.0f
-		timer.scaleY = 1.0f
 
 		background_progress.visibility = View.GONE
 		background_done.visibility = View.VISIBLE

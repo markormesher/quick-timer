@@ -8,10 +8,15 @@
 
 	<string name="no_timers">No timers to display.</string>
 
-	<string name="sec_singular">sec</string>
-	<string name="sec_plural">secs</string>
+
+	<string name="timer_template_hms">%1$dh %2$02dm %3$02ds</string>
+	<string name="timer_template_ms">%1$02dm %2$02ds</string>
+	<string name="timer_template_s">%02ds</string>
 
 	<string name="select_timer_duration">Select duration</string>
+	<string name="duration_picker_h">h</string>
+	<string name="duration_picker_m">m</string>
+	<string name="duration_picker_s">s</string>
 	<string name="duplicate_timer">That duration already exists.</string>
 	<string name="confirm_timer_delete">Delete timer?</string>
 
@@ -22,8 +27,6 @@
 	<string name="setting_group_timer_display">Timer Display</string>
 	<string name="setting_key_keep_screen_on">keep_screen_on</string>
 	<string name="setting_title_keep_screen_on">Keep the screen on</string>
-	<string name="setting_key_animate_timer_digits">animate_timer_digits</string>
-	<string name="setting_title_animate_timer_digits">Animate digits</string>
 
 	<string name="setting_group_timer_completion_alarm">Timer Completion Alarm</string>
 	<string name="setting_key_vibrate_on_timer_end">vibrate_on_timer_end</string>
