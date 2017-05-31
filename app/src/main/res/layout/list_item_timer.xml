@@ -14,16 +14,7 @@
 			android:id="@+id/duration"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginEnd="@dimen/space_nano"
-			android:layout_marginRight="@dimen/space_nano"
 			style="@style/Text.TimerListItemDuration"
-			/>
-
-	<TextView
-			android:id="@+id/units"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			style="@style/Text.TimerListItemMeta"
 			/>
 
 </LinearLayout>
