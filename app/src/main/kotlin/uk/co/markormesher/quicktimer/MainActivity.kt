@@ -6,12 +6,9 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
-import android.widget.NumberPicker
+import android.view.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_duration_picker.view.*
 import uk.co.markormesher.quicktimer.helpers.Preferences
 import uk.co.markormesher.quicktimer.helpers.getPrimaryColor
 import uk.co.markormesher.quicktimer.helpers.toast
@@ -80,16 +77,25 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 
 	private fun addTimer() {
 		with(AlertDialog.Builder(this)) {
-			val picker = NumberPicker(this@MainActivity)
-			picker.minValue = 1
-			picker.maxValue = 10 * 60 * 60
-			picker.value = 30
+			val view = LayoutInflater.from(this@MainActivity).inflate(R.layout.dialog_duration_picker, null)
+			view.h_picker.minValue = 0
+			view.h_picker.maxValue = 9
+			view.h_picker.value = 0
+			view.m_picker.minValue = 0
+			view.m_picker.maxValue = 59
+			view.m_picker.value = 0
+			view.s_picker.minValue = 0
+			view.s_picker.maxValue = 59
+			view.s_picker.value = 30
+			view.s_picker.requestFocus()
 
 			setTitle(R.string.select_timer_duration)
-			setView(picker)
+			setView(view)
 			setPositiveButton(R.string.ok, { _, _ ->
-				picker.clearFocus()
-				val duration = picker.value
+				view.h_picker.clearFocus()
+				view.m_picker.clearFocus()
+				view.s_picker.clearFocus()
+				val duration = (view.h_picker.value * 60 * 60) + (view.m_picker.value * 60) + view.s_picker.value
 				if (TimerListStorage.getTimerList(this@MainActivity).contains(duration)) {
 					toast(R.string.duplicate_timer)
 				} else {

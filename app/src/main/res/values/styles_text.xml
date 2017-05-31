@@ -17,4 +17,8 @@
 		<item name="android:textSize">64sp</item>
 	</style>
 
+	<style name="Text.PickerUnit" parent="Text">
+		<item name="android:textSize">18sp</item>
+	</style>
+
 </resources>
