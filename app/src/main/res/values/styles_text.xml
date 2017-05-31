@@ -14,7 +14,7 @@
 	</style>
 
 	<style name="Text.TimerDisplay" parent="Text">
-		<item name="android:textSize">64sp</item>
+		<item name="android:textSize">52sp</item>
 	</style>
 
 	<style name="Text.PickerUnit" parent="Text">
