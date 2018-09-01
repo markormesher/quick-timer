@@ -5,8 +5,8 @@ import uk.co.markormesher.quicktimer.helpers.Preferences.getPrefs
 
 object TimerListStorage {
 
-	private val TIMER_LIST_KEY = "timer_list"
-	private val DEFAULT_TIMER_LIST = "30,60,90"
+	private const val TIMER_LIST_KEY = "timer_list"
+	private const val DEFAULT_TIMER_LIST = "30,60,90"
 
 	fun getTimerList(context: Context): List<Int> = getPrefs(context)
 			.getString(TIMER_LIST_KEY, DEFAULT_TIMER_LIST)

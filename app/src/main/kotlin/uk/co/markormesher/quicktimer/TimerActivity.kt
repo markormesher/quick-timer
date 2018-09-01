@@ -21,7 +21,7 @@ import uk.co.markormesher.quicktimer.helpers.toast
 class TimerActivity: AppCompatActivity() {
 
 	companion object {
-		val DURATION_KEY = "duration"
+		const val DURATION_KEY = "duration"
 	}
 
 	private var lastBackClick = 0L
@@ -83,6 +83,7 @@ class TimerActivity: AppCompatActivity() {
 		}
 
 		if (Preferences.shouldVibrateOnTimerEnd(this)) {
+			// TODO: use new vibration API
 			(getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(longArrayOf(0L, 500L, 300L, 500L), -1)
 		}
 

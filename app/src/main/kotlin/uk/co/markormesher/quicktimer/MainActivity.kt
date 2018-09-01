@@ -1,5 +1,6 @@
 package uk.co.markormesher.quicktimer
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -40,8 +41,8 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		timers_recycler.adapter = timerRecyclerAdapter
 		timers_recycler.addItemDecoration(timerRecyclerDecoration)
 
-		fab.setIcon(R.drawable.ic_add)
-		fab.setBackgroundColour(getPrimaryColor())
+		fab.setButtonIconResource(R.drawable.ic_add)
+		fab.setButtonBackgroundColour(getPrimaryColor())
 		fab.setOnClickListener { addTimer() }
 
 		updateTimerList()
@@ -75,6 +76,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		}
 	}
 
+	@SuppressLint("InflateParams")
 	private fun addTimer() {
 		with(AlertDialog.Builder(this)) {
 			val view = LayoutInflater.from(this@MainActivity).inflate(R.layout.dialog_duration_picker, null)
@@ -91,7 +93,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 
 			setTitle(R.string.select_timer_duration)
 			setView(view)
-			setPositiveButton(R.string.ok, { _, _ ->
+			setPositiveButton(R.string.ok) { _, _ ->
 				view.h_picker.clearFocus()
 				view.m_picker.clearFocus()
 				view.s_picker.clearFocus()
@@ -102,7 +104,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 					TimerListStorage.addTimer(this@MainActivity, duration)
 					updateTimerList()
 				}
-			})
+			}
 			setNegativeButton(R.string.cancel, null)
 			setCancelable(true)
 
@@ -122,10 +124,10 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 	override fun onTimerLongClick(duration: Int): Boolean {
 		with(AlertDialog.Builder(this)) {
 			setMessage(R.string.confirm_timer_delete)
-			setPositiveButton(R.string.ok, { _, _ ->
+			setPositiveButton(R.string.ok) { _, _ ->
 				TimerListStorage.removeTimer(this@MainActivity, duration)
 				updateTimerList()
-			})
+			}
 			setNegativeButton(R.string.cancel, null)
 			setCancelable(true)
 

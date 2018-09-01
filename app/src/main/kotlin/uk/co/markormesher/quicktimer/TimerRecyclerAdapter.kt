@@ -8,18 +8,18 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.list_item_timer.view.*
 import uk.co.markormesher.quicktimer.helpers.formatDuration
 
-class TimerRecyclerAdapter(val context: Context, val listener: TimerRecyclerClickListener? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TimerRecyclerAdapter(private val context: Context, private val listener: TimerRecyclerClickListener? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 	private val layoutInflater by lazy { LayoutInflater.from(context)!! }
 	val timers = ArrayList<Int>()
 
 	override fun getItemCount(): Int = timers.size
 
-	override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 		return TimerViewHolder(layoutInflater.inflate(R.layout.list_item_timer, parent, false))
 	}
 
-	override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+	override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 		with(holder as TimerViewHolder) {
 			val timer = timers[position]
 			duration.text = context.formatDuration(timer)
