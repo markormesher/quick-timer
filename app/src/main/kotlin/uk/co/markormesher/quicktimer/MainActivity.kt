@@ -70,12 +70,14 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		}
 
 		localBroadcastManager.registerReceiver(timerUpdateReceiver, IntentFilter(TimerService.UPDATE_INTENT_ACTION))
+		localBroadcastManager.registerReceiver(timerCancelReceiver, IntentFilter(TimerService.CANCEL_INTENT_ACTION))
 	}
 
 	override fun onPause() {
 		super.onPause()
 
 		localBroadcastManager.unregisterReceiver(timerUpdateReceiver)
+		localBroadcastManager.unregisterReceiver(timerCancelReceiver)
 	}
 
 	private fun initViews() {
@@ -123,6 +125,13 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 					updateViews()
 				}
 			}
+		}
+	}
+
+	private val timerCancelReceiver = object: BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent?) {
+			currentTimerActive = false
+			updateViews()
 		}
 	}
 
