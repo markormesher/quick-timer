@@ -116,9 +116,9 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 	}
 
 	override fun onTimerClick(duration: Int) {
-		val gotoTimerIntent = Intent(this, TimerActivity::class.java)
-		gotoTimerIntent.putExtra(TimerActivity.Companion.DURATION_KEY, duration)
-		startActivity(gotoTimerIntent)
+		val intent = Intent(this, TimerService::class.java)
+		intent.putExtra(TimerService.DURATION_KEY, duration)
+		startService(intent)
 	}
 
 	override fun onTimerLongClick(duration: Int): Boolean {

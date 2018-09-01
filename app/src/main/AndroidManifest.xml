@@ -37,6 +37,11 @@
 				android:screenOrientation="portrait"
 				/>
 
+		<service
+				android:name=".TimerService"
+				android:process="uk.co.markormesher.quicktimer.timer_process"
+				/>
+
 	</application>
 
 </manifest>
