@@ -1,22 +1,25 @@
 package uk.co.markormesher.quicktimer
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_duration_picker.view.*
-import uk.co.markormesher.quicktimer.helpers.*
+import uk.co.markormesher.quicktimer.helpers.AbstractAnimationListener
+import uk.co.markormesher.quicktimer.helpers.Preferences
+import uk.co.markormesher.quicktimer.helpers.formatDuration
+import uk.co.markormesher.quicktimer.helpers.getPrimaryColor
 
 
 class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClickListener {
@@ -82,12 +85,12 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 
 		fab.setButtonIconResource(R.drawable.ic_add)
 		fab.setButtonBackgroundColour(getPrimaryColor())
-		fab.setOnClickListener { addTimer() }
+		fab.setOnClickListener { makeDialogToCreateTimer { updateTimerList() } }
 
 		updateTimerList()
 	}
 
-	private fun updateView() {
+	private fun updateViews() {
 		timer_list_wrapper.visibility = if (currentTimerActive) View.GONE else View.VISIBLE
 		timer_display_wrapper.visibility = if (currentTimerActive) View.VISIBLE else View.GONE
 
@@ -102,7 +105,28 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		}
 	}
 
-	private fun finishTimer() {
+	private val timerUpdateReceiver = object: BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent?) {
+			val durationRemaining = intent?.extras?.getInt(TimerService.DURATION_REMAINING_KEY)
+			val percentRemaining = intent?.extras?.getFloat(TimerService.PERCENT_REMAINING_KEY)
+
+			if (durationRemaining != null && percentRemaining != null) {
+				if (percentRemaining == 0f) {
+					startTimerEndAnimation(onComplete = {
+						currentTimerActive = false
+						updateViews()
+					})
+				} else {
+					currentTimerActive = true
+					currentTimerDurationRemaining = durationRemaining
+					currentTimerPercentRemaining = percentRemaining
+					updateViews()
+				}
+			}
+		}
+	}
+
+	private fun startTimerEndAnimation(onComplete: () -> Unit) {
 		timer_text.text = getString(R.string.timer_done)
 
 		background_progress.visibility = View.GONE
@@ -111,22 +135,12 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		val animation = AnimationUtils.loadAnimation(this, R.anim.timer_background_flash)
 		animation.setAnimationListener(object: AbstractAnimationListener() {
 			override fun onAnimationEnd(animation: Animation?) {
-				currentTimerActive = false
-				updateView()
-
 				background_progress.visibility = View.VISIBLE
 				background_done.visibility = View.GONE
+				onComplete()
 			}
 		})
 		background_done.startAnimation(animation)
-
-		if (Preferences.shouldVibrateOnTimerEnd(this)) {
-			doAlarmVibration()
-		}
-
-		if (Preferences.shouldPlaySoundOnTimerEnd(this)) {
-			doAlarmSound()
-		}
 	}
 
 	private fun updateTimerList() {
@@ -134,46 +148,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		timerRecyclerAdapter.timers.addAll(TimerListStorage.getTimerList(this))
 		timerRecyclerAdapter.notifyDataSetChanged()
 
-		updateView()
-	}
-
-	@SuppressLint("InflateParams")
-	private fun addTimer() {
-		with(AlertDialog.Builder(this)) {
-			val view = LayoutInflater.from(this@MainActivity).inflate(R.layout.dialog_duration_picker, null)
-			view.h_picker.minValue = 0
-			view.h_picker.maxValue = 9
-			view.h_picker.value = 0
-			view.m_picker.minValue = 0
-			view.m_picker.maxValue = 59
-			view.m_picker.value = 0
-			view.s_picker.minValue = 0
-			view.s_picker.maxValue = 59
-			view.s_picker.value = 30
-			view.s_picker.requestFocus()
-
-			setTitle(R.string.select_timer_duration)
-			setView(view)
-			setPositiveButton(R.string.ok) { _, _ ->
-				view.h_picker.clearFocus()
-				view.m_picker.clearFocus()
-				view.s_picker.clearFocus()
-				val duration = (view.h_picker.value * 60 * 60) + (view.m_picker.value * 60) + view.s_picker.value
-				if (TimerListStorage.getTimerList(this@MainActivity).contains(duration)) {
-					toast(R.string.duplicate_timer)
-				} else {
-					TimerListStorage.addTimer(this@MainActivity, duration)
-					updateTimerList()
-				}
-			}
-			setNegativeButton(R.string.cancel, null)
-			setCancelable(true)
-
-			with(create()) {
-				setCanceledOnTouchOutside(true)
-				show()
-			}
-		}
+		updateViews()
 	}
 
 	override fun onTimerClick(duration: Int) {
@@ -182,39 +157,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		startService(intent)
 	}
 
-	override fun onTimerLongClick(duration: Int): Boolean {
-		with(AlertDialog.Builder(this)) {
-			setMessage(R.string.confirm_timer_delete)
-			setPositiveButton(R.string.ok) { _, _ ->
-				TimerListStorage.removeTimer(this@MainActivity, duration)
-				updateTimerList()
-			}
-			setNegativeButton(R.string.cancel, null)
-			setCancelable(true)
-
-			with(create()) {
-				setCanceledOnTouchOutside(true)
-				show()
-			}
-		}
-		return true
-	}
-
-	private val timerUpdateReceiver = object: BroadcastReceiver() {
-		override fun onReceive(context: Context?, intent: Intent?) {
-			val durationRemaining = intent?.extras?.getInt(TimerService.DURATION_REMAINING_KEY)
-			val percentRemaining = intent?.extras?.getFloat(TimerService.PERCENT_REMAINING_KEY)
-
-			if (durationRemaining != null && percentRemaining != null) {
-				if (percentRemaining == 0f) {
-					finishTimer()
-				} else {
-					currentTimerDurationRemaining = durationRemaining
-					currentTimerPercentRemaining = percentRemaining
-					currentTimerActive = true
-					updateView()
-				}
-			}
-		}
+	override fun onTimerLongClick(duration: Int) {
+		makeDialogToDeleteTimer(duration) { updateTimerList() }
 	}
 }

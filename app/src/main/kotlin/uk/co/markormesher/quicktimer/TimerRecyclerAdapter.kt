@@ -24,7 +24,10 @@ class TimerRecyclerAdapter(private val context: Context, private val listener: T
 			val timer = timers[position]
 			duration.text = context.formatDuration(timer)
 			rootView.setOnClickListener { listener?.onTimerClick(timer) }
-			rootView.setOnLongClickListener { listener?.onTimerLongClick(timer) ?: false }
+			rootView.setOnLongClickListener {
+				listener?.onTimerLongClick(timer)
+				return@setOnLongClickListener true
+			}
 		}
 	}
 
@@ -35,7 +38,7 @@ class TimerRecyclerAdapter(private val context: Context, private val listener: T
 
 	interface TimerRecyclerClickListener {
 		fun onTimerClick(duration: Int)
-		fun onTimerLongClick(duration: Int): Boolean
+		fun onTimerLongClick(duration: Int)
 	}
 
 }

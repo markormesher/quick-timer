@@ -9,7 +9,10 @@ import android.os.Build
 import android.os.Handler
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.LocalBroadcastManager
+import uk.co.markormesher.quicktimer.helpers.Preferences
+import uk.co.markormesher.quicktimer.helpers.doAlarmVibration
 import uk.co.markormesher.quicktimer.helpers.formatDuration
+import uk.co.markormesher.quicktimer.helpers.playAlarmSound
 
 
 class TimerService: Service() {
@@ -93,6 +96,15 @@ class TimerService: Service() {
 			updateHandler.postDelayed(updateRunnable, UPDATE_PERIOD)
 		} else {
 			broadcastUpdate(0, 0f)
+
+			if (Preferences.shouldVibrateOnTimerEnd(this)) {
+				doAlarmVibration()
+			}
+
+			if (Preferences.shouldPlaySoundOnTimerEnd(this)) {
+				playAlarmSound()
+			}
+
 			stopForeground(true)
 		}
 	}

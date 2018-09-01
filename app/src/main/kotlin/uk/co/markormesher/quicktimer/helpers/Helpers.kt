@@ -30,7 +30,7 @@ fun Context.doAlarmVibration() {
 	}
 }
 
-fun Context.doAlarmSound() {
+fun Context.playAlarmSound() {
 	val alarmTone: Uri = Uri.parse("android.resource://" + packageName + "/" + R.raw.alarm)
 	MediaPlayer.create(applicationContext, alarmTone).start()
 }
