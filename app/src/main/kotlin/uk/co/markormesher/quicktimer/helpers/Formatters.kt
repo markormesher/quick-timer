@@ -7,16 +7,14 @@ import android.text.style.RelativeSizeSpan
 import uk.co.markormesher.quicktimer.R
 
 fun Context.formatDuration(duration: Int): SpannableString {
-	val h = duration / (60 * 60)
-	val m = (duration / 60).rem(60)
-	val s = duration.rem(60)
+	val hours = duration / (60 * 60)
+	val mins = (duration / 60).rem(60)
+	val secs = duration.rem(60)
 	val str: String
-	if (h > 0) {
-		str = getString(R.string.timer_template_hms, h, m, s)
-	} else if (m > 0) {
-		str =  getString(R.string.timer_template_ms, m, s)
-	} else {
-		str = getString(R.string.timer_template_s, s)
+	str = when {
+		hours > 0 -> getString(R.string.timer_template_hms, hours, mins, secs)
+		mins > 0 -> getString(R.string.timer_template_ms, mins, secs)
+		else -> getString(R.string.timer_template_s, secs)
 	}
 
 	val output = SpannableString(str)
