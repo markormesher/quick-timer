@@ -3,9 +3,7 @@ package uk.co.markormesher.quicktimer
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Vibrator
+import android.os.*
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager
@@ -83,8 +81,13 @@ class TimerActivity: AppCompatActivity() {
 		}
 
 		if (Preferences.shouldVibrateOnTimerEnd(this)) {
-			// TODO: use new vibration API
-			(getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(longArrayOf(0L, 500L, 300L, 500L), -1)
+			val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				vibrator.vibrate(VibrationEffect.createOneShot(500L, -1))
+			} else {
+				@Suppress("DEPRECATION")
+				vibrator.vibrate(longArrayOf(0L, 500L, 300L, 500L), -1)
+			}
 		}
 
 		if (Preferences.shouldPlaySoundOnTimerEnd(this)) {
