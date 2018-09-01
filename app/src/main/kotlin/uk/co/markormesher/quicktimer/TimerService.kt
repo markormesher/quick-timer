@@ -77,7 +77,7 @@ class TimerService: Service() {
 		}
 
 		notificationBuilder = builder
-				.setSmallIcon(R.mipmap.ic_launcher)
+				.setSmallIcon(R.drawable.ic_circle_slice_8)
 				.setContentTitle(getString(R.string.app_name))
 	}
 
@@ -90,7 +90,20 @@ class TimerService: Service() {
 		val percentRemaining = msRemaining.toFloat() / timerDurationInMs
 
 		if (msRemaining > 0) {
-			notificationBuilder.setContentText(formatDuration(secsRemaining))
+
+			val icon = when {
+				percentRemaining >= (7f/8) -> R.drawable.ic_circle_slice_8
+				percentRemaining >= (6f/8) -> R.drawable.ic_circle_slice_7
+				percentRemaining >= (5f/8) -> R.drawable.ic_circle_slice_6
+				percentRemaining >= (4f/8) -> R.drawable.ic_circle_slice_5
+				percentRemaining >= (3f/8) -> R.drawable.ic_circle_slice_4
+				percentRemaining >= (2f/8) -> R.drawable.ic_circle_slice_3
+				percentRemaining >= (1f/8) -> R.drawable.ic_circle_slice_2
+				else -> R.drawable.ic_circle_slice_1
+			}
+			notificationBuilder
+					.setContentText(formatDuration(secsRemaining))
+					.setSmallIcon(icon)
 			startForeground(NOTIFICATION_ID, notificationBuilder.build())
 			broadcastUpdate(secsRemaining, percentRemaining)
 			updateHandler.postDelayed(updateRunnable, UPDATE_PERIOD)
