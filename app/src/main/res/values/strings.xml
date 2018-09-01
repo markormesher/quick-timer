@@ -8,6 +8,7 @@
 
 	<string name="no_timers">No timers to display.</string>
 
+	<string name="timer_done">Done!</string>
 
 	<string name="timer_template_hms">%1$dh %2$02dm %3$02ds</string>
 	<string name="timer_template_ms">%1$02dm %2$02ds</string>

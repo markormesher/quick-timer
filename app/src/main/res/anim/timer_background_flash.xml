@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Note: repeat count should be odd to make sure the animation ends on a faded-out state
+-->
+
 <alpha
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		android:fromAlpha="0.0"
 		android:toAlpha="1.0"
 		android:duration="400"
-		android:repeatCount="4"
+		android:repeatCount="5"
 		android:repeatMode="reverse"
 		/>
