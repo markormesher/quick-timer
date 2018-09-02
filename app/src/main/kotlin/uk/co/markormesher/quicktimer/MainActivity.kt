@@ -69,15 +69,15 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 			window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 		}
 
-		localBroadcastManager.registerReceiver(timerUpdateReceiver, IntentFilter(TimerService.UPDATE_INTENT_ACTION))
-		localBroadcastManager.registerReceiver(timerCancelReceiver, IntentFilter(TimerService.CANCEL_INTENT_ACTION))
+		localBroadcastManager.registerReceiver(timerUpdatedReceiver, IntentFilter(TimerService.INTENT_TIMER_UPDATED))
+		localBroadcastManager.registerReceiver(timerCancelledReceiver, IntentFilter(TimerService.INTENT_TIMER_CANCELLED))
 	}
 
 	override fun onPause() {
 		super.onPause()
 
-		localBroadcastManager.unregisterReceiver(timerUpdateReceiver)
-		localBroadcastManager.unregisterReceiver(timerCancelReceiver)
+		localBroadcastManager.unregisterReceiver(timerUpdatedReceiver)
+		localBroadcastManager.unregisterReceiver(timerCancelledReceiver)
 	}
 
 	private fun initViews() {
@@ -107,7 +107,15 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		}
 	}
 
-	private val timerUpdateReceiver = object: BroadcastReceiver() {
+	private fun updateTimerList() {
+		timerRecyclerAdapter.timers.clear()
+		timerRecyclerAdapter.timers.addAll(TimerListStorage.getTimerList(this))
+		timerRecyclerAdapter.notifyDataSetChanged()
+
+		updateViews()
+	}
+
+	private val timerUpdatedReceiver = object: BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {
 			val durationRemaining = intent?.extras?.getInt(TimerService.DURATION_REMAINING_KEY)
 			val percentRemaining = intent?.extras?.getFloat(TimerService.PERCENT_REMAINING_KEY)
@@ -128,7 +136,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		}
 	}
 
-	private val timerCancelReceiver = object: BroadcastReceiver() {
+	private val timerCancelledReceiver = object: BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {
 			currentTimerActive = false
 			updateViews()
@@ -150,14 +158,6 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 			}
 		})
 		background_done.startAnimation(animation)
-	}
-
-	private fun updateTimerList() {
-		timerRecyclerAdapter.timers.clear()
-		timerRecyclerAdapter.timers.addAll(TimerListStorage.getTimerList(this))
-		timerRecyclerAdapter.notifyDataSetChanged()
-
-		updateViews()
 	}
 
 	override fun onTimerClick(duration: Int) {
