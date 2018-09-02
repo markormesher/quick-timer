@@ -71,6 +71,8 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 
 		localBroadcastManager.registerReceiver(timerUpdatedReceiver, IntentFilter(TimerService.INTENT_TIMER_UPDATED))
 		localBroadcastManager.registerReceiver(timerCancelledReceiver, IntentFilter(TimerService.INTENT_TIMER_CANCELLED))
+
+		// TODO: check if a timer is running, or whether it was cancelled while we were away
 	}
 
 	override fun onPause() {
