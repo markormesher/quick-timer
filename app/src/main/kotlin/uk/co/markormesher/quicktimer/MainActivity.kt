@@ -1,50 +1,38 @@
 package uk.co.markormesher.quicktimer
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_duration_picker.view.*
+import uk.co.markormesher.quicktimer.helpers.AbstractAnimationListener
 import uk.co.markormesher.quicktimer.helpers.Preferences
+import uk.co.markormesher.quicktimer.helpers.formatDuration
 import uk.co.markormesher.quicktimer.helpers.getPrimaryColor
-import uk.co.markormesher.quicktimer.helpers.toast
 
 
 class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClickListener {
 
-	private val timerRecyclerLayoutManager by lazy { LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) }
-	private val timerRecyclerAdapter by lazy { uk.co.markormesher.quicktimer.TimerRecyclerAdapter(this, this) }
-	private val timerRecyclerDecoration by lazy { DividerItemDecoration(timers_recycler.context, timerRecyclerLayoutManager.orientation) }
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_main)
-		initViews()
+	private val timerRecyclerLayoutManager by lazy {
+		LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+	}
+	private val timerRecyclerAdapter by lazy {
+		TimerRecyclerAdapter(this, this)
+	}
+	private val timerRecyclerDecoration by lazy {
+		DividerItemDecoration(timers_recycler.context, timerRecyclerLayoutManager.orientation)
 	}
 
-	override fun onResume() {
-		super.onResume()
-		if (Preferences.shouldKeepScreenOn(this)) {
-			window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-		} else {
-			window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-		}
-	}
-
-	private fun initViews() {
-		timers_recycler.layoutManager = timerRecyclerLayoutManager
-		timers_recycler.adapter = timerRecyclerAdapter
-		timers_recycler.addItemDecoration(timerRecyclerDecoration)
-
-		fab.setIcon(R.drawable.ic_add)
-		fab.setBackgroundColour(getPrimaryColor())
-		fab.setOnClickListener { addTimer() }
-
-		updateTimerList()
+	private val localBroadcastManager by lazy {
+		LocalBroadcastManager.getInstance(applicationContext)
 	}
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -59,81 +47,113 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		return super.onOptionsItemSelected(item)
 	}
 
-	private fun updateTimerList() {
-		with(timerRecyclerAdapter.timers) {
-			clear()
-			addAll(TimerListStorage.getTimerList(this@MainActivity))
-		}
-		timerRecyclerAdapter.notifyDataSetChanged()
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setContentView(R.layout.activity_main)
+		initViews()
+	}
 
-		if (timerRecyclerAdapter.timers.isNotEmpty()) {
-			timers_recycler.visibility = View.VISIBLE
-			no_timers_message.visibility = View.GONE
+	override fun onResume() {
+		super.onResume()
+
+		if (Preferences.shouldKeepScreenOn(this)) {
+			window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 		} else {
-			timers_recycler.visibility = View.GONE
-			no_timers_message.visibility = View.VISIBLE
+			window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+		}
+
+		localBroadcastManager.registerReceiver(timerUpdatedReceiver, IntentFilter(TimerService.INTENT_TIMER_UPDATED))
+
+		updateViews(skipEvents = true)
+	}
+
+	override fun onPause() {
+		super.onPause()
+		localBroadcastManager.unregisterReceiver(timerUpdatedReceiver)
+	}
+
+	private val timerUpdatedReceiver = object: BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent?) = updateViews()
+	}
+
+	private fun initViews() {
+		timers_recycler.layoutManager = timerRecyclerLayoutManager
+		timers_recycler.adapter = timerRecyclerAdapter
+		timers_recycler.addItemDecoration(timerRecyclerDecoration)
+
+		fab.setButtonIconResource(R.drawable.ic_add)
+		fab.setButtonBackgroundColour(getPrimaryColor())
+		fab.setOnClickListener { makeDialogToCreateTimer { updateTimerList() } }
+
+		updateTimerList()
+	}
+
+	private fun updateViews(skipEvents: Boolean = false) {
+		if (ActiveTimer.currentState == ActiveTimer.State.FINISHED && skipEvents) {
+			ActiveTimer.currentState = ActiveTimer.State.INACTIVE
+		}
+
+		when (ActiveTimer.currentState) {
+			ActiveTimer.State.INACTIVE -> {
+				showSingleViewWrapper(timer_list_wrapper)
+
+				val timerListEmpty = timerRecyclerAdapter.timers.isEmpty()
+				timers_recycler.visibility = if (timerListEmpty) View.GONE else View.VISIBLE
+				no_timers_message.visibility = if (timerListEmpty) View.VISIBLE else View.GONE
+			}
+
+			ActiveTimer.State.RUNNING -> {
+				showSingleViewWrapper(timer_display_wrapper)
+
+				timer_text.text = formatDuration(ActiveTimer.secsRemaining)
+				background_progress.scaleY = ActiveTimer.percentRemaining
+				background_progress.alpha = ActiveTimer.percentRemaining
+			}
+
+			ActiveTimer.State.FINISHED -> {
+				showSingleViewWrapper(timer_finished_wrapper)
+				startTimerEndAnimation(onComplete = {
+					ActiveTimer.currentState = ActiveTimer.State.INACTIVE
+					updateViews()
+				})
+			}
 		}
 	}
 
-	private fun addTimer() {
-		with(AlertDialog.Builder(this)) {
-			val view = LayoutInflater.from(this@MainActivity).inflate(R.layout.dialog_duration_picker, null)
-			view.h_picker.minValue = 0
-			view.h_picker.maxValue = 9
-			view.h_picker.value = 0
-			view.m_picker.minValue = 0
-			view.m_picker.maxValue = 59
-			view.m_picker.value = 0
-			view.s_picker.minValue = 0
-			view.s_picker.maxValue = 59
-			view.s_picker.value = 30
-			view.s_picker.requestFocus()
-
-			setTitle(R.string.select_timer_duration)
-			setView(view)
-			setPositiveButton(R.string.ok, { _, _ ->
-				view.h_picker.clearFocus()
-				view.m_picker.clearFocus()
-				view.s_picker.clearFocus()
-				val duration = (view.h_picker.value * 60 * 60) + (view.m_picker.value * 60) + view.s_picker.value
-				if (TimerListStorage.getTimerList(this@MainActivity).contains(duration)) {
-					toast(R.string.duplicate_timer)
-				} else {
-					TimerListStorage.addTimer(this@MainActivity, duration)
-					updateTimerList()
-				}
-			})
-			setNegativeButton(R.string.cancel, null)
-			setCancelable(true)
-
-			with(create()) {
-				setCanceledOnTouchOutside(true)
-				show()
+	private fun showSingleViewWrapper(wrapper: ViewGroup) {
+		listOf(timer_list_wrapper, timer_display_wrapper, timer_finished_wrapper).forEach {
+			it.visibility = if (it == wrapper) {
+				View.VISIBLE
+			} else {
+				View.GONE
 			}
 		}
+	}
+
+	private fun updateTimerList() {
+		timerRecyclerAdapter.timers.clear()
+		timerRecyclerAdapter.timers.addAll(TimerListStorage.getTimerList(this))
+		timerRecyclerAdapter.notifyDataSetChanged()
+
+		updateViews()
+	}
+
+	private fun startTimerEndAnimation(onComplete: () -> Unit) {
+		timer_text.text = getString(R.string.timer_done)
+
+		val animation = AnimationUtils.loadAnimation(this, R.anim.timer_background_flash)
+		animation.setAnimationListener(object: AbstractAnimationListener() {
+			override fun onAnimationEnd(animation: Animation?) = onComplete()
+		})
+		background_done.startAnimation(animation)
 	}
 
 	override fun onTimerClick(duration: Int) {
-		val gotoTimerIntent = Intent(this, TimerActivity::class.java)
-		gotoTimerIntent.putExtra(TimerActivity.Companion.DURATION_KEY, duration)
-		startActivity(gotoTimerIntent)
+		ActiveTimer.init(duration * 1000L)
+		startService(Intent(this, TimerService::class.java))
 	}
 
-	override fun onTimerLongClick(duration: Int): Boolean {
-		with(AlertDialog.Builder(this)) {
-			setMessage(R.string.confirm_timer_delete)
-			setPositiveButton(R.string.ok, { _, _ ->
-				TimerListStorage.removeTimer(this@MainActivity, duration)
-				updateTimerList()
-			})
-			setNegativeButton(R.string.cancel, null)
-			setCancelable(true)
-
-			with(create()) {
-				setCanceledOnTouchOutside(true)
-				show()
-			}
-		}
-		return true
+	override fun onTimerLongClick(duration: Int) {
+		makeDialogToDeleteTimer(duration) { updateTimerList() }
 	}
 }

@@ -2,6 +2,9 @@ buildscript {
 	repositories {
 		jcenter()
 		mavenCentral()
+		maven {
+			url "https://maven.google.com"
+		}
 	}
 
 	dependencies {
@@ -17,13 +20,13 @@ def secrets = getSecrets()
 def appProperties = getAppProperties(projectDir)
 
 android {
-	compileSdkVersion 25
-	buildToolsVersion "25.0.3"
+	compileSdkVersion 27
+	buildToolsVersion "27.0.3"
 
 	defaultConfig {
 		applicationId "uk.co.markormesher.quicktimer"
 		minSdkVersion 16
-		targetSdkVersion 25
+		targetSdkVersion 27
 		versionCode = appProperties['VERSION_CODE'].toInteger()
 		versionName = appProperties['VERSION_NAME']
 		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -62,16 +65,16 @@ android {
 }
 
 dependencies {
-	def supportLibraryVersion = '25.3.1'
+	def supportLibraryVersion = '27.1.1'
 
-	compile fileTree(dir: 'libs', include: ['*.jar'])
-	compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-	compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-	compile "com.android.support:design:$supportLibraryVersion"
-	compile 'uk.co.markormesher:android-fab:1.3.1'
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
+	implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+	implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+	implementation "com.android.support:design:$supportLibraryVersion"
+	implementation 'uk.co.markormesher:android-fab:2.3.1'
 
-	testCompile 'junit:junit:4.12'
-	androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+	testImplementation 'junit:junit:4.12'
+	androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
 		exclude group: 'com.android.support', module: 'support-annotations'
 	})
 }

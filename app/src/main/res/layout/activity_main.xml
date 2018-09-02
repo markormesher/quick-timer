@@ -1,32 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		android:orientation="vertical"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		>
 
-	<android.support.v7.widget.RecyclerView
-			android:id="@+id/timers_recycler"
-			android:layout_height="match_parent"
+	<RelativeLayout
+			android:id="@+id/timer_list_wrapper"
 			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			>
+
+		<android.support.v7.widget.RecyclerView
+				android:id="@+id/timers_recycler"
+				android:layout_height="match_parent"
+				android:layout_width="match_parent"
+				android:visibility="gone"
+				/>
+
+		<TextView
+				android:id="@+id/no_timers_message"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true"
+				android:gravity="center"
+				android:text="@string/no_timers"
+				style="@style/Text.Note"
+				/>
+
+		<uk.co.markormesher.android_fab.FloatingActionButton
+				android:id="@+id/fab"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				/>
+
+	</RelativeLayout>
+
+	<RelativeLayout
+			android:id="@+id/timer_display_wrapper"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
 			android:visibility="gone"
-			/>
+			>
 
-	<TextView
-			android:id="@+id/no_timers_message"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_centerInParent="true"
-			android:gravity="center"
-			android:text="@string/no_timers"
-			style="@style/Text.Note"
-			/>
+		<View
+				android:id="@+id/background_progress"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:background="@color/timer_progress_background"
+				/>
 
-	<uk.co.markormesher.android_fab.FloatingActionButton
-			android:id="@+id/fab"
+		<TextView
+				android:id="@+id/timer_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true"
+				style="@style/Text.TimerDisplay"
+				/>
+
+	</RelativeLayout>
+
+	<RelativeLayout
+			android:id="@+id/timer_finished_wrapper"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			/>
+			android:visibility="gone"
+			>
 
-</RelativeLayout>
+		<View
+				android:id="@+id/background_done"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:background="@color/timer_done_background"
+				/>
+
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true"
+				android:text="@string/timer_done"
+				style="@style/Text.TimerDisplay"
+				/>
+
+	</RelativeLayout>
+
+</LinearLayout>
