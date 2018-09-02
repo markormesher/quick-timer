@@ -26,16 +26,8 @@ class TimerService: Service() {
 		private const val UPDATE_PERIOD = 80L
 
 		const val INTENT_TIMER_CANCEL_REQUESTED = "uk.co.markormesher.quicktimer.timer_cancel_requested"
-		const val INTENT_TIMER_CANCELLED = "uk.co.markormesher.quicktimer.timer_canceled"
 		const val INTENT_TIMER_UPDATED = "uk.co.markormesher.quicktimer.timer_updated"
-
-		const val DURATION_KEY = "duration"
-		const val DURATION_REMAINING_KEY = "duration_remaining"
-		const val PERCENT_REMAINING_KEY = "percent_remaining"
 	}
-
-	private var timerDurationInMs = 0L
-	private var timerStartTime = 0L
 
 	private var lastSecsRemainingNotified = -1
 	private var lastIconNotified = -1
@@ -51,23 +43,16 @@ class TimerService: Service() {
 	}
 
 	private val updateHandler by lazy { Handler(mainLooper) }
-	private val updateRunnable = Runnable { updateNotification() }
+	private val updateRunnable = Runnable { updateTimerState() }
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-		if (intent?.extras?.containsKey(DURATION_KEY) == true) {
-			timerDurationInMs = (intent.extras[DURATION_KEY] as Int) * 1000L
-			timerStartTime = System.currentTimeMillis()
-			updateNotification()
-		}
-
+		updateTimerState()
 		applicationContext.registerReceiver(timerCancelRequestedReceiver, IntentFilter(INTENT_TIMER_CANCEL_REQUESTED))
-
 		return super.onStartCommand(intent, flags, startId)
 	}
 
 	override fun onDestroy() {
 		applicationContext.unregisterReceiver(timerCancelRequestedReceiver)
-
 		super.onDestroy()
 	}
 
@@ -102,43 +87,14 @@ class TimerService: Service() {
 		}
 	}
 
-	private fun updateNotification() {
-		initNotification()
-
-		val msElapsed = System.currentTimeMillis() - timerStartTime
-		val msRemaining = timerDurationInMs - msElapsed
-		val secsRemaining = (msRemaining / 1000).toInt()
-		val percentRemaining = msRemaining.toFloat() / timerDurationInMs
-
-		if (msRemaining > 0) {
-
-			val icon = when {
-				percentRemaining >= (7f / 8) -> R.drawable.ic_circle_slice_8
-				percentRemaining >= (6f / 8) -> R.drawable.ic_circle_slice_7
-				percentRemaining >= (5f / 8) -> R.drawable.ic_circle_slice_6
-				percentRemaining >= (4f / 8) -> R.drawable.ic_circle_slice_5
-				percentRemaining >= (3f / 8) -> R.drawable.ic_circle_slice_4
-				percentRemaining >= (2f / 8) -> R.drawable.ic_circle_slice_3
-				percentRemaining >= (1f / 8) -> R.drawable.ic_circle_slice_2
-				else -> R.drawable.ic_circle_slice_1
-			}
-
-			// only update the notification if something changed
-			if (secsRemaining != lastSecsRemainingNotified || icon != lastIconNotified) {
-				with(notificationBuilder) {
-					setContentText(formatDuration(secsRemaining))
-					setSmallIcon(icon)
-				}
-				startForeground(NOTIFICATION_ID, notificationBuilder.build())
-
-				lastSecsRemainingNotified = secsRemaining
-				lastIconNotified = icon
-			}
-
-			broadcastUpdate(secsRemaining, percentRemaining)
+	private fun updateTimerState() {
+		if (ActiveTimer.msRemaining > 0) {
+			broadcastUpdate()
+			updateNotification()
 			updateHandler.postDelayed(updateRunnable, UPDATE_PERIOD)
 		} else {
-			broadcastUpdate(0, 0f)
+			ActiveTimer.reset(ActiveTimer.State.FINISHED)
+			broadcastUpdate()
 
 			if (Preferences.shouldVibrateOnTimerEnd(this)) {
 				doAlarmVibration()
@@ -153,17 +109,42 @@ class TimerService: Service() {
 		}
 	}
 
-	private fun broadcastUpdate(durationRemaining: Int, percentRemaining: Float) {
-		val updateIntent = Intent(INTENT_TIMER_UPDATED)
-		updateIntent.putExtra(DURATION_KEY, (timerDurationInMs / 1000).toInt())
-		updateIntent.putExtra(DURATION_REMAINING_KEY, durationRemaining)
-		updateIntent.putExtra(PERCENT_REMAINING_KEY, percentRemaining)
-		localBroadcastManager.sendBroadcast(updateIntent)
+	private fun updateNotification() {
+		initNotification()
+
+		val icon = when {
+			ActiveTimer.percentRemaining >= (7f / 8) -> R.drawable.ic_circle_slice_8
+			ActiveTimer.percentRemaining >= (6f / 8) -> R.drawable.ic_circle_slice_7
+			ActiveTimer.percentRemaining >= (5f / 8) -> R.drawable.ic_circle_slice_6
+			ActiveTimer.percentRemaining >= (4f / 8) -> R.drawable.ic_circle_slice_5
+			ActiveTimer.percentRemaining >= (3f / 8) -> R.drawable.ic_circle_slice_4
+			ActiveTimer.percentRemaining >= (2f / 8) -> R.drawable.ic_circle_slice_3
+			ActiveTimer.percentRemaining >= (1f / 8) -> R.drawable.ic_circle_slice_2
+			else -> R.drawable.ic_circle_slice_1
+		}
+
+		// only update the notification if something changed
+		if (ActiveTimer.secsRemaining != lastSecsRemainingNotified || icon != lastIconNotified) {
+			with(notificationBuilder) {
+				setContentText(formatDuration(ActiveTimer.secsRemaining))
+				setSmallIcon(icon)
+			}
+			startForeground(NOTIFICATION_ID, notificationBuilder.build())
+
+			lastSecsRemainingNotified = ActiveTimer.secsRemaining
+			lastIconNotified = icon
+		}
+	}
+
+	private fun broadcastUpdate() {
+		localBroadcastManager.sendBroadcast(Intent(INTENT_TIMER_UPDATED))
 	}
 
 	private val timerCancelRequestedReceiver = object: BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {
-			localBroadcastManager.sendBroadcast(Intent(INTENT_TIMER_CANCELLED))
+			ActiveTimer.reset(ActiveTimer.State.INACTIVE)
+			broadcastUpdate()
+
 			updateHandler.removeCallbacks(updateRunnable)
 			stopForeground(true)
 			stopSelf()

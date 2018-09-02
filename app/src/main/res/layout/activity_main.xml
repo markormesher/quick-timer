@@ -51,19 +51,35 @@
 				android:background="@color/timer_progress_background"
 				/>
 
-		<View
-				android:id="@+id/background_done"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:background="@color/timer_done_background"
-				android:visibility="gone"
-				/>
-
 		<TextView
 				android:id="@+id/timer_text"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_centerInParent="true"
+				style="@style/Text.TimerDisplay"
+				/>
+
+	</RelativeLayout>
+
+	<RelativeLayout
+			android:id="@+id/timer_finished_wrapper"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:visibility="gone"
+			>
+
+		<View
+				android:id="@+id/background_done"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:background="@color/timer_done_background"
+				/>
+
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true"
+				android:text="@string/timer_done"
 				style="@style/Text.TimerDisplay"
 				/>
 

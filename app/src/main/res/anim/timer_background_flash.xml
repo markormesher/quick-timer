@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-Note: repeat count should be odd to make sure the animation ends on a faded-out state
+Note: repeat count should be odd to make sure the animation ends on a faded-out currentState
 -->
 
 <alpha

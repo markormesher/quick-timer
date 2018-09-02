@@ -9,10 +9,7 @@ import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -37,10 +34,6 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 	private val localBroadcastManager by lazy {
 		LocalBroadcastManager.getInstance(applicationContext)
 	}
-
-	private var currentTimerActive = false
-	private var currentTimerDurationRemaining = 0
-	private var currentTimerPercentRemaining = 0f
 
 	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 		menuInflater.inflate(R.menu.menu, menu)
@@ -70,16 +63,17 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		}
 
 		localBroadcastManager.registerReceiver(timerUpdatedReceiver, IntentFilter(TimerService.INTENT_TIMER_UPDATED))
-		localBroadcastManager.registerReceiver(timerCancelledReceiver, IntentFilter(TimerService.INTENT_TIMER_CANCELLED))
 
-		// TODO: check if a timer is running, or whether it was cancelled while we were away
+		updateViews(skipEvents = true)
 	}
 
 	override fun onPause() {
 		super.onPause()
-
 		localBroadcastManager.unregisterReceiver(timerUpdatedReceiver)
-		localBroadcastManager.unregisterReceiver(timerCancelledReceiver)
+	}
+
+	private val timerUpdatedReceiver = object: BroadcastReceiver() {
+		override fun onReceive(context: Context?, intent: Intent?) = updateViews()
 	}
 
 	private fun initViews() {
@@ -94,18 +88,45 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		updateTimerList()
 	}
 
-	private fun updateViews() {
-		timer_list_wrapper.visibility = if (currentTimerActive) View.GONE else View.VISIBLE
-		timer_display_wrapper.visibility = if (currentTimerActive) View.VISIBLE else View.GONE
+	private fun updateViews(skipEvents: Boolean = false) {
+		if (ActiveTimer.currentState == ActiveTimer.State.FINISHED && skipEvents) {
+			ActiveTimer.currentState = ActiveTimer.State.INACTIVE
+		}
 
-		if (currentTimerActive) {
-			timer_text.text = formatDuration(currentTimerDurationRemaining)
-			background_progress.scaleY = currentTimerPercentRemaining
-			background_progress.alpha = currentTimerPercentRemaining
-		} else {
-			val timerListEmpty = timerRecyclerAdapter.timers.isEmpty()
-			timers_recycler.visibility = if (timerListEmpty) View.GONE else View.VISIBLE
-			no_timers_message.visibility = if (timerListEmpty) View.VISIBLE else View.GONE
+		when (ActiveTimer.currentState) {
+			ActiveTimer.State.INACTIVE -> {
+				showSingleViewWrapper(timer_list_wrapper)
+
+				val timerListEmpty = timerRecyclerAdapter.timers.isEmpty()
+				timers_recycler.visibility = if (timerListEmpty) View.GONE else View.VISIBLE
+				no_timers_message.visibility = if (timerListEmpty) View.VISIBLE else View.GONE
+			}
+
+			ActiveTimer.State.RUNNING -> {
+				showSingleViewWrapper(timer_display_wrapper)
+
+				timer_text.text = formatDuration(ActiveTimer.secsRemaining)
+				background_progress.scaleY = ActiveTimer.percentRemaining
+				background_progress.alpha = ActiveTimer.percentRemaining
+			}
+
+			ActiveTimer.State.FINISHED -> {
+				showSingleViewWrapper(timer_finished_wrapper)
+				startTimerEndAnimation(onComplete = {
+					ActiveTimer.currentState = ActiveTimer.State.INACTIVE
+					updateViews()
+				})
+			}
+		}
+	}
+
+	private fun showSingleViewWrapper(wrapper: ViewGroup) {
+		listOf(timer_list_wrapper, timer_display_wrapper, timer_finished_wrapper).forEach {
+			it.visibility = if (it == wrapper) {
+				View.VISIBLE
+			} else {
+				View.GONE
+			}
 		}
 	}
 
@@ -117,55 +138,19 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		updateViews()
 	}
 
-	private val timerUpdatedReceiver = object: BroadcastReceiver() {
-		override fun onReceive(context: Context?, intent: Intent?) {
-			val durationRemaining = intent?.extras?.getInt(TimerService.DURATION_REMAINING_KEY)
-			val percentRemaining = intent?.extras?.getFloat(TimerService.PERCENT_REMAINING_KEY)
-
-			if (durationRemaining != null && percentRemaining != null) {
-				if (percentRemaining == 0f) {
-					startTimerEndAnimation(onComplete = {
-						currentTimerActive = false
-						updateViews()
-					})
-				} else {
-					currentTimerActive = true
-					currentTimerDurationRemaining = durationRemaining
-					currentTimerPercentRemaining = percentRemaining
-					updateViews()
-				}
-			}
-		}
-	}
-
-	private val timerCancelledReceiver = object: BroadcastReceiver() {
-		override fun onReceive(context: Context?, intent: Intent?) {
-			currentTimerActive = false
-			updateViews()
-		}
-	}
-
 	private fun startTimerEndAnimation(onComplete: () -> Unit) {
 		timer_text.text = getString(R.string.timer_done)
 
-		background_progress.visibility = View.GONE
-		background_done.visibility = View.VISIBLE
-
 		val animation = AnimationUtils.loadAnimation(this, R.anim.timer_background_flash)
 		animation.setAnimationListener(object: AbstractAnimationListener() {
-			override fun onAnimationEnd(animation: Animation?) {
-				background_progress.visibility = View.VISIBLE
-				background_done.visibility = View.GONE
-				onComplete()
-			}
+			override fun onAnimationEnd(animation: Animation?) = onComplete()
 		})
 		background_done.startAnimation(animation)
 	}
 
 	override fun onTimerClick(duration: Int) {
-		val intent = Intent(this, TimerService::class.java)
-		intent.putExtra(TimerService.DURATION_KEY, duration)
-		startService(intent)
+		ActiveTimer.init(duration * 1000L)
+		startService(Intent(this, TimerService::class.java))
 	}
 
 	override fun onTimerLongClick(duration: Int) {
