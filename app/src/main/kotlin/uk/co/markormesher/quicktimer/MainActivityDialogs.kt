@@ -2,8 +2,8 @@ package uk.co.markormesher.quicktimer
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.dialog_duration_picker.view.*
 import uk.co.markormesher.quicktimer.helpers.toast
 
