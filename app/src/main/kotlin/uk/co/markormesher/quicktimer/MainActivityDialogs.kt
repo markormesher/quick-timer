@@ -29,7 +29,7 @@ fun Context.createTimerCreationDialog(onTimerListUpdate: () -> Unit) {
 			requestFocus()
 		}
 
-		setTitle(R.string.select_timer_duration)
+		setTitle(R.string.duration_picker_title)
 		setView(view)
 		setPositiveButton(R.string.ok) { _, _ ->
 			view.hour_picker.clearFocus()
@@ -37,7 +37,7 @@ fun Context.createTimerCreationDialog(onTimerListUpdate: () -> Unit) {
 			view.sec_picker.clearFocus()
 			val duration = (view.hour_picker.value * 60 * 60) + (view.min_picker.value * 60) + view.sec_picker.value
 			if (TimerListStorage.getTimerList(this@createTimerCreationDialog).contains(duration)) {
-				toast(R.string.duplicate_timer)
+				toast(R.string.duplicate_timer_error)
 			} else {
 				TimerListStorage.addTimer(this@createTimerCreationDialog, duration)
 				onTimerListUpdate()

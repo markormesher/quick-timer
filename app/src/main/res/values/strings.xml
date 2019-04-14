@@ -14,11 +14,11 @@
 	<string name="timer_template_ms">%1$02dm %2$02ds</string>
 	<string name="timer_template_s">%02ds</string>
 
-	<string name="select_timer_duration">Select duration</string>
+	<string name="duration_picker_title">Select duration</string>
 	<string name="duration_picker_h">h</string>
 	<string name="duration_picker_m">m</string>
 	<string name="duration_picker_s">s</string>
-	<string name="duplicate_timer">That duration already exists.</string>
+	<string name="duplicate_timer_error">That duration already exists.</string>
 
 	<string name="timer_options_title">Timer Options</string>
 	<string name="repeat_timer_option">Repeat Timer</string>

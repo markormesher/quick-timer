@@ -11,4 +11,4 @@ Note: repeat count should be odd to make sure the animation ends on a faded-out 
 		android:duration="400"
 		android:repeatCount="5"
 		android:repeatMode="reverse"
-		/>
+/>

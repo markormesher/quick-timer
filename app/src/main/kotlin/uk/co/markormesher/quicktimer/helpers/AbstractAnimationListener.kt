@@ -2,7 +2,7 @@ package uk.co.markormesher.quicktimer.helpers
 
 import android.view.animation.Animation
 
-open class AbstractAnimationListener: Animation.AnimationListener {
+open class AbstractAnimationListener : Animation.AnimationListener {
 	override fun onAnimationStart(animation: Animation?) {
 	}
 

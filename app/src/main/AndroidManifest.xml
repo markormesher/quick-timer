@@ -1,6 +1,8 @@
 <manifest
 		xmlns:android="http://schemas.android.com/apk/res/android"
-		package="uk.co.markormesher.quicktimer">
+		xmlns:tools="http://schemas.android.com/tools"
+		package="uk.co.markormesher.quicktimer"
+>
 
 	<uses-permission android:name="android.permission.VIBRATE"/>
 	<uses-permission-sdk-23 android:name="android.permission.VIBRATE"/>
@@ -12,13 +14,13 @@
 			android:supportsRtl="true"
 			android:theme="@style/AppTheme"
 			android:fullBackupContent="true"
-			>
+			tools:ignore="GoogleAppIndexingWarning">
 
 		<activity
 				android:name="uk.co.markormesher.quicktimer.MainActivity"
 				android:launchMode="singleInstance"
 				android:screenOrientation="portrait"
-				>
+		>
 
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
@@ -30,11 +32,11 @@
 		<activity
 				android:name=".SettingsActivity"
 				android:screenOrientation="portrait"
-				/>
+		/>
 
 		<service
 				android:name=".TimerService"
-				/>
+		/>
 
 	</application>
 

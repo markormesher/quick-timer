@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.preference.PreferenceFragment
 import androidx.appcompat.app.AppCompatActivity
 
-
-class SettingsActivity: AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -16,7 +15,7 @@ class SettingsActivity: AppCompatActivity() {
 				.commit()
 	}
 
-	class SettingsFragment: PreferenceFragment() {
+	class SettingsFragment : PreferenceFragment() {
 
 		override fun onCreate(savedInstanceState: Bundle?) {
 			super.onCreate(savedInstanceState)

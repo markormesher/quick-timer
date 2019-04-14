@@ -3,27 +3,32 @@
 		xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<PreferenceCategory
-			android:title="@string/setting_group_timer_display">
+			android:title="@string/setting_group_timer_display"
+	>
 
 		<CheckBoxPreference
 				android:key="@string/setting_key_keep_screen_on"
 				android:title="@string/setting_title_keep_screen_on"
-				android:defaultValue="true"/>
+				android:defaultValue="true"
+		/>
 
 	</PreferenceCategory>
 
 	<PreferenceCategory
-			android:title="@string/setting_group_timer_completion_alarm">
+			android:title="@string/setting_group_timer_completion_alarm"
+	>
 
 		<CheckBoxPreference
 				android:key="@string/setting_key_vibrate_on_timer_end"
 				android:title="@string/setting_title_vibrate_on_timer_end"
-				android:defaultValue="true"/>
+				android:defaultValue="true"
+		/>
 
 		<CheckBoxPreference
 				android:key="@string/setting_key_sound_on_timer_end"
 				android:title="@string/setting_title_sound_on_timer_end"
-				android:defaultValue="false"/>
+				android:defaultValue="false"
+		/>
 
 	</PreferenceCategory>
 

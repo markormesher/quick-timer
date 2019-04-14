@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_item_timer.view.*
 import uk.co.markormesher.quicktimer.helpers.formatDuration
 
-class TimerRecyclerAdapter(private val context: Context, private val listener: TimerRecyclerClickListener? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TimerRecyclerAdapter(private val context: Context, private val listener: TimerRecyclerClickListener? = null) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 	private val layoutInflater by lazy { LayoutInflater.from(context)!! }
 	val timers = ArrayList<Int>()
@@ -31,7 +31,7 @@ class TimerRecyclerAdapter(private val context: Context, private val listener: T
 		}
 	}
 
-	class TimerViewHolder(v: View): RecyclerView.ViewHolder(v) {
+	class TimerViewHolder(v: View) : RecyclerView.ViewHolder(v) {
 		val rootView = v
 		val duration = v.duration!!
 	}
