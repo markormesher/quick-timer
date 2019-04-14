@@ -17,6 +17,10 @@
 		<item name="android:textSize">52sp</item>
 	</style>
 
+	<style name="Text.TimerCancel" parent="Text">
+		<item name="android:textSize">18sp</item>
+	</style>
+
 	<style name="Text.PickerUnit" parent="Text">
 		<item name="android:textSize">18sp</item>
 	</style>

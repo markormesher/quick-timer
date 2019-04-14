@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -80,6 +81,11 @@ class MainActivity : AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClic
 		timers_recycler.layoutManager = timerRecyclerLayoutManager
 		timers_recycler.adapter = timerRecyclerAdapter
 		timers_recycler.addItemDecoration(timerRecyclerDecoration)
+
+		cancel_button.setOnClickListener {
+			Log.d("TIMER_APP", "cancel clicked")
+			localBroadcastManager.sendBroadcast(Intent(TimerService.INTENT_TIMER_CANCEL_REQUESTED))
+		}
 
 		fab.setButtonIconResource(R.drawable.ic_add)
 		fab.setButtonBackgroundColour(getPrimaryColor())

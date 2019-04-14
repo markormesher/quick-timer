@@ -47,11 +47,13 @@ class TimerService : Service() {
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		updateTimerState()
 		applicationContext.registerReceiver(timerCancelRequestedReceiver, IntentFilter(INTENT_TIMER_CANCEL_REQUESTED))
+		localBroadcastManager.registerReceiver(timerCancelRequestedReceiver, IntentFilter(INTENT_TIMER_CANCEL_REQUESTED))
 		return super.onStartCommand(intent, flags, startId)
 	}
 
 	override fun onDestroy() {
 		applicationContext.unregisterReceiver(timerCancelRequestedReceiver)
+		localBroadcastManager.unregisterReceiver(timerCancelRequestedReceiver)
 		super.onDestroy()
 	}
 

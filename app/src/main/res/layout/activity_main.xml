@@ -4,20 +4,20 @@
 		android:orientation="vertical"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		>
+>
 
 	<RelativeLayout
 			android:id="@+id/timer_list_wrapper"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			>
+	>
 
 		<androidx.recyclerview.widget.RecyclerView
 				android:id="@+id/timers_recycler"
 				android:layout_height="match_parent"
 				android:layout_width="match_parent"
 				android:visibility="gone"
-				/>
+		/>
 
 		<TextView
 				android:id="@+id/no_timers_message"
@@ -27,13 +27,13 @@
 				android:gravity="center"
 				android:text="@string/no_timers"
 				style="@style/Text.Note"
-				/>
+		/>
 
 		<uk.co.markormesher.android_fab.FloatingActionButton
 				android:id="@+id/fab"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				/>
+		/>
 
 	</RelativeLayout>
 
@@ -42,14 +42,14 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:visibility="gone"
-			>
+	>
 
 		<View
 				android:id="@+id/background_progress"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:background="@color/timer_progress_background"
-				/>
+		/>
 
 		<TextView
 				android:id="@+id/timer_text"
@@ -57,7 +57,22 @@
 				android:layout_height="wrap_content"
 				android:layout_centerInParent="true"
 				style="@style/Text.TimerDisplay"
-				/>
+		/>
+
+		<TextView
+				android:id="@+id/cancel_button"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentBottom="true"
+				android:layout_centerHorizontal="true"
+				android:gravity="center"
+				android:padding="@dimen/space_medium"
+				android:text="@string/cancel"
+				android:drawableStart="@drawable/ic_close"
+				android:background="?attr/selectableItemBackground"
+				android:alpha="0.4"
+				style="@style/Text.TimerCancel"
+		/>
 
 	</RelativeLayout>
 
@@ -66,14 +81,14 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:visibility="gone"
-			>
+	>
 
 		<View
 				android:id="@+id/background_done"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:background="@color/timer_done_background"
-				/>
+		/>
 
 		<TextView
 				android:layout_width="wrap_content"
@@ -81,7 +96,7 @@
 				android:layout_centerInParent="true"
 				android:text="@string/timer_done"
 				style="@style/Text.TimerDisplay"
-				/>
+		/>
 
 	</RelativeLayout>
 
