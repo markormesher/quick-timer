@@ -68,7 +68,6 @@
 				android:gravity="center"
 				android:padding="@dimen/space_medium"
 				android:text="@string/cancel"
-				android:drawableStart="@drawable/ic_close"
 				android:background="?attr/selectableItemBackground"
 				android:alpha="0.4"
 				style="@style/Text.TimerCancel"
