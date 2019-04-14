@@ -19,8 +19,7 @@ import uk.co.markormesher.quicktimer.helpers.Preferences
 import uk.co.markormesher.quicktimer.helpers.formatDuration
 import uk.co.markormesher.quicktimer.helpers.getPrimaryColor
 
-
-class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClickListener {
+class MainActivity : AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClickListener {
 
 	private val timerRecyclerLayoutManager by lazy {
 		LinearLayoutManager(this, RecyclerView.VERTICAL, false)
@@ -73,7 +72,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		localBroadcastManager.unregisterReceiver(timerUpdatedReceiver)
 	}
 
-	private val timerUpdatedReceiver = object: BroadcastReceiver() {
+	private val timerUpdatedReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) = updateViews()
 	}
 
@@ -84,7 +83,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 
 		fab.setButtonIconResource(R.drawable.ic_add)
 		fab.setButtonBackgroundColour(getPrimaryColor())
-		fab.setOnClickListener { makeDialogToCreateTimer { updateTimerList() } }
+		fab.setOnClickListener { createTimerCreationDialog { updateTimerList() } }
 
 		updateTimerList()
 	}
@@ -143,7 +142,7 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 		timer_text.text = getString(R.string.timer_done)
 
 		val animation = AnimationUtils.loadAnimation(this, R.anim.timer_background_flash)
-		animation.setAnimationListener(object: AbstractAnimationListener() {
+		animation.setAnimationListener(object : AbstractAnimationListener() {
 			override fun onAnimationEnd(animation: Animation?) = onComplete()
 		})
 		background_done.startAnimation(animation)
@@ -155,6 +154,6 @@ class MainActivity: AppCompatActivity(), TimerRecyclerAdapter.TimerRecyclerClick
 	}
 
 	override fun onTimerLongClick(duration: Int) {
-		makeDialogToDeleteTimer(duration) { updateTimerList() }
+		createTimerOptionsDialog(duration) { updateTimerList() }
 	}
 }

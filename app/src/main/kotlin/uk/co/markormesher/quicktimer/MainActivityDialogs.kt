@@ -2,15 +2,16 @@ package uk.co.markormesher.quicktimer
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.dialog_duration_picker.view.*
 import uk.co.markormesher.quicktimer.helpers.toast
 
 @SuppressLint("InflateParams")
-fun Context.makeDialogToCreateTimer(onTimerListUpdate: () -> Unit) {
+fun Context.createTimerCreationDialog(onTimerListUpdate: () -> Unit) {
 	with(AlertDialog.Builder(this)) {
-		val view = LayoutInflater.from(this@makeDialogToCreateTimer).inflate(R.layout.dialog_duration_picker, null)
+		val view = LayoutInflater.from(this@createTimerCreationDialog).inflate(R.layout.dialog_duration_picker, null)
 		with(view.hour_picker) {
 			minValue = 0
 			maxValue = 9
@@ -35,10 +36,10 @@ fun Context.makeDialogToCreateTimer(onTimerListUpdate: () -> Unit) {
 			view.min_picker.clearFocus()
 			view.sec_picker.clearFocus()
 			val duration = (view.hour_picker.value * 60 * 60) + (view.min_picker.value * 60) + view.sec_picker.value
-			if (TimerListStorage.getTimerList(this@makeDialogToCreateTimer).contains(duration)) {
+			if (TimerListStorage.getTimerList(this@createTimerCreationDialog).contains(duration)) {
 				toast(R.string.duplicate_timer)
 			} else {
-				TimerListStorage.addTimer(this@makeDialogToCreateTimer, duration)
+				TimerListStorage.addTimer(this@createTimerCreationDialog, duration)
 				onTimerListUpdate()
 			}
 		}
@@ -52,11 +53,37 @@ fun Context.makeDialogToCreateTimer(onTimerListUpdate: () -> Unit) {
 	}
 }
 
-fun Context.makeDialogToDeleteTimer(duration: Int, onTimerListUpdate: () -> Unit) {
+@SuppressLint("InflateParams")
+fun Context.createTimerOptionsDialog(duration: Int, onTimerListUpdate: () -> Unit) {
 	with(AlertDialog.Builder(this)) {
-		setMessage(R.string.confirm_timer_delete)
+		setTitle(R.string.timer_options_title)
+		setItems(arrayOf(
+				getString(R.string.repeat_timer_option),
+				getString(R.string.delete_timer_option)
+		)) { _, which ->
+			when (which) {
+				0 -> {
+					ActiveTimer.init(duration * 1000L, repeating = true)
+					startService(Intent(this@createTimerOptionsDialog, TimerService::class.java))
+				}
+				1 -> createTimerDeleteDialog(duration, onTimerListUpdate)
+			}
+		}
+		setNegativeButton(R.string.cancel, null)
+		setCancelable(true)
+
+		with(create()) {
+			setCanceledOnTouchOutside(true)
+			show()
+		}
+	}
+}
+
+fun Context.createTimerDeleteDialog(duration: Int, onTimerListUpdate: () -> Unit) {
+	with(AlertDialog.Builder(this)) {
+		setMessage(R.string.delete_timer_confirm)
 		setPositiveButton(R.string.ok) { _, _ ->
-			TimerListStorage.removeTimer(this@makeDialogToDeleteTimer, duration)
+			TimerListStorage.removeTimer(this@createTimerDeleteDialog, duration)
 			onTimerListUpdate()
 		}
 		setNegativeButton(R.string.cancel, null)

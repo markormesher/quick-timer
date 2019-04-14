@@ -17,8 +17,7 @@ import uk.co.markormesher.quicktimer.helpers.doAlarmVibration
 import uk.co.markormesher.quicktimer.helpers.formatDuration
 import uk.co.markormesher.quicktimer.helpers.playAlarmSound
 
-
-class TimerService: Service() {
+class TimerService : Service() {
 
 	companion object {
 		private const val NOTIFICATION_ID = 1415
@@ -93,9 +92,6 @@ class TimerService: Service() {
 			updateNotification()
 			updateHandler.postDelayed(updateRunnable, UPDATE_PERIOD)
 		} else {
-			ActiveTimer.reset(ActiveTimer.State.FINISHED)
-			broadcastUpdate()
-
 			if (Preferences.shouldVibrateOnTimerEnd(this)) {
 				doAlarmVibration()
 			}
@@ -104,8 +100,17 @@ class TimerService: Service() {
 				playAlarmSound()
 			}
 
-			stopForeground(true)
-			stopSelf()
+			if (ActiveTimer.repeatingTimer) {
+				ActiveTimer.repeat()
+				broadcastUpdate()
+				updateNotification()
+				updateHandler.postDelayed(updateRunnable, UPDATE_PERIOD)
+			} else {
+				ActiveTimer.reset(ActiveTimer.State.FINISHED)
+				broadcastUpdate()
+				stopForeground(true)
+				stopSelf()
+			}
 		}
 	}
 
@@ -140,7 +145,7 @@ class TimerService: Service() {
 		localBroadcastManager.sendBroadcast(Intent(INTENT_TIMER_UPDATED))
 	}
 
-	private val timerCancelRequestedReceiver = object: BroadcastReceiver() {
+	private val timerCancelRequestedReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context?, intent: Intent?) {
 			ActiveTimer.reset(ActiveTimer.State.INACTIVE)
 			broadcastUpdate()

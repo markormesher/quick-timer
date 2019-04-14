@@ -3,17 +3,28 @@ package uk.co.markormesher.quicktimer
 object ActiveTimer {
 
 	var totalDurationInMs = 0L
+	var repeatingTimer = false
 	var startTimeInMs = 0L
 	var currentState = State.INACTIVE
 
-	fun init(durationInMs: Long) {
+	fun init(durationInMs: Long, repeating: Boolean = false) {
 		totalDurationInMs = durationInMs
+		repeatingTimer = repeating
 		startTimeInMs = System.currentTimeMillis()
 		currentState = State.RUNNING
 	}
 
+	fun repeat() {
+		if (currentState !== ActiveTimer.State.RUNNING) {
+			throw IllegalStateException("Cannot repeat a non-running timer")
+		}
+
+		startTimeInMs = System.currentTimeMillis()
+	}
+
 	fun reset(state: State) {
 		totalDurationInMs = 0
+		repeatingTimer = false
 		startTimeInMs = 0L
 		currentState = state
 	}
@@ -30,6 +41,7 @@ object ActiveTimer {
 	override fun toString(): String {
 		return "ActiveTimer[" +
 				" totalDurationInMs=$totalDurationInMs," +
+				" repeatingTimer=$repeatingTimer," +
 				" startTimeInMs=$startTimeInMs," +
 				" currentState=$currentState" +
 				" ]"
